@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RIFA 100 — Sistema de Rifa Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Biblioteca para gerar a foto do comprovante -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <!-- CABEÇALHO PRINCIPAL -->
+  <header class="app-header">
+    <div class="container">
+      <h1 class="brand-title">🎟️ RIFA 100</h1>
+      <p class="brand-subtitle">Escolha seu número da sorte e participe!</p>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    
+    <!-- CARD DO PRÊMIO (VISÃO DO CLIENTE) -->
+    <section class="card prize-card" aria-labelledby="prize-title">
+      <span class="badge badge-highlight">Rifa Premiada</span>
+      
+      <div class="prize-image-container">
+        <img src="https://via.placeholder.com/600x350?text=Foto+do+Pr%C3%Aamio" id="prize-img" alt="Foto do prêmio" class="prize-image">
+      </div>
+
+      <div class="prize-details">
+        <h2 id="prize-title" class="prize-title">🏆 Smartphone XYZ</h2>
+        <p id="prize-description" class="prize-description">
+          Smartphone novo, 128GB, com garantia de fábrica. Escolha seus números abaixo!
+        </p>
+
+        <div class="prize-info-grid">
+          <div class="info-item">
+            <span class="info-label">💰 Valor por número:</span>
+            <span id="prize-ticket-price" class="info-value">R$ 5,00</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🎟️ Total de números:</span>
+            <span id="prize-total-tickets" class="info-value">100</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAINEL DE INDICADORES -->
+    <section class="card metrics-card" aria-label="Estatísticas da Rifa">
+      <h3>📊 Situação da Rifa</h3>
+      <div class="metrics-grid">
+        <div class="metric-box metric-available">
+          <span class="metric-num" id="stat-available">100</span>
+          <span class="metric-label">Disponíveis</span>
+        </div>
+        <div class="metric-box metric-reserved">
+          <span class="metric-num" id="stat-reserved">0</span>
+          <span class="metric-label">Reservados</span>
+        </div>
+        <div class="metric-box metric-sold">
+          <span class="metric-num" id="stat-sold">0</span>
+          <span class="metric-label">Vendidos</span>
+        </div>
+        <div class="metric-box metric-free">
+          <span class="metric-num" id="stat-free">0</span>
+          <span class="metric-label">Gratuitos</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEGENDA DOS ESTADOS -->
+    <section class="card legend-card" aria-label="Legenda dos Estados">
+      <div class="legend-grid">
+        <div class="legend-item"><span class="status-dot status-available"></span> 🟢 Disponível</div>
+        <div class="legend-item"><span class="status-dot status-reserved"></span> 🟡 Reservado</div>
+        <div class="legend-item"><span class="status-dot status-sold"></span> 🔴 Vendido</div>
+        <div class="legend-item"><span class="status-dot status-free"></span> 🔵 Grátis</div>
+      </div>
+    </section>
+
+    <!-- GRADE DOS 100 NÚMEROS -->
+    <section class="card grid-card" aria-label="Grade de Seleção de Números">
+      <h3>🎟️ Clique em um número para participar</h3>
+      <div id="numbers-grid" class="numbers-grid" role="group" aria-label="Números de 1 a 100">
+        <!-- Renderização dinâmica via JS -->
+      </div>
+    </section>
+
+    <!-- ÁREA DE SORTEIO E RESULTADO -->
+    <section class="card draw-card" aria-labelledby="draw-title">
+      <h3 id="draw-title">🎲 Sorteio da Rifa</h3>
+      
+      <div id="draw-display" class="draw-display" aria-live="polite">
+        <span id="draw-number-spinner" class="spinner-number">--</span>
+      </div>
+
+      <!-- Card do Resultado -->
+      <div id="draw-result-card" class="result-card hidden" aria-live="polite">
+        <h4>🎉 RESULTADO DO SORTEIO</h4>
+        <p><strong>Data/Hora:</strong> <span id="res-datetime">--</span></p>
+        <p><strong>Número Sorteado:</strong> <span id="res-number" class="highlight-number">--</span></p>
+        <p><strong>Ganhador:</strong> <span id="res-winner">--</span></p>
+        <hr>
+        <p class="verification-code">
+          <small>Código de verificação:</small><br>
+          <code id="res-hash">XXXX-XXXX-XXXX</code>
+        </p>
+      </div>
+    </section>
+
+    <!-- BOTÃO PARA EXIBIR ÁREA ADMINISTRATIVA -->
+    <div style="text-align: center; margin: 20px 0;">
+      <button type="button" id="btn-toggle-admin" class="btn btn-secondary" style="max-width: 250px;">
+        ⚙️ Painel do Organizador
+      </button>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO (OCULTO POR PADRÃO) -->
+    <aside id="admin-panel" class="card admin-card hidden" aria-labelledby="admin-title">
+      <h3 id="admin-title">⚙️ Gerenciamento da Rifa</h3>
+      
+      <!-- FORMULÁRIO 1: EDITAR DADOS DO PRÊMIO -->
+      <form id="form-edit-prize" class="admin-form" style="margin-bottom: 24px;">
+        <h4>🖼️ Configurar Prêmio e Valor</h4>
+        <div class="form-group">
+          <label for="edit-title">Nome do Prêmio:</label>
+          <input type="text" id="edit-title" required placeholder="Ex: Pix de R$ 500,00">
+        </div>
+        <div class="form-group">
+          <label for="edit-desc">Descrição:</label>
+          <input type="text" id="edit-desc" required placeholder="Ex: Pagamento imediato via Pix ao sorteado.">
+        </div>
+        <div class="form-group">
+          <label for="edit-price">Valor por Número (ex: R$ 5,00):</label>
+          <input type="text" id="edit-price" required placeholder="R$ 5,00">
+        </div>
+        <div class="form-group">
+          <label for="edit-img-file">📸 Foto do Prêmio (Galeria do Celular):</label>
+          <input type="file" id="edit-img-file" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Alterações do Prêmio</button>
+      </form>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+      <!-- FORMULÁRIO 2: GERENCIAR NÚMEROS -->
+      <form id="admin-form" class="admin-form">
+        <h4>🎟️ Alterar Estado do Número</h4>
+        <div class="form-group">
+          <label for="input-number">Número (1-100):</label>
+          <input type="number" id="input-number" min="1" max="100" placeholder="Ex: 07" required>
+        </div>
+        <div class="form-group">
+          <label for="input-name">Nome do Participante:</label>
+          <input type="text" id="input-name" placeholder="Ex: João da Silva">
+        </div>
+        <div class="form-group">
+          <label for="input-phone">Telefone:</label>
+          <input type="tel" id="input-phone" placeholder="Ex: (11) 99999-9999">
+        </div>
+        <div class="form-group">
+          <label for="select-status">Status:</label>
+          <select id="select-status">
+            <option value="available">🟢 Disponível</option>
+            <option value="reserved">🟡 Reservado</option>
+            <option value="sold">🔴 Vendido</option>
+            <option value="free">🔵 Grátis</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-secondary">Atualizar Número</button>
+      </form>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+      <!-- EXECUÇÃO DO SORTEIO (APENAS ORGANIZADOR) -->
+      <h4>🎲 Ação do Sorteio</h4>
+      <button id="btn-draw" class="btn btn-primary" style="margin-bottom: 20px;">
+        🎲 Executar Sorteio Agora
+      </button>
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+      <!-- BACKUP JSON -->
+      <h4>💾 Backup dos Dados (JSON)</h4>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+        <button type="button" id="btn-exportar" class="btn btn-secondary" style="flex: 1;">📥 Baixar Backup</button>
+        <input type="file" id="file-importar" accept=".json" style="display: none;">
+        <button type="button" id="btn-importar" class="btn btn-secondary" style="flex: 1;">📤 Restaurar Backup</button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- MODAL DE COMPRA / COMPROVANTE DO CLIENTE -->
+  <div id="modal-buy" class="modal-overlay hidden">
+    <div class="modal-content">
+      
+      <!-- PASSO 1: FORMULÁRIO DE COMPRA -->
+      <div id="modal-step-form">
+        <h3 id="modal-title">Escolher Número 00</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px;">Preencha seus dados para reservar:</p>
+        
+        <form id="form-buy-client">
+          <input type="hidden" id="modal-number-input">
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label for="client-name">Seu Nome Completo:</label>
+            <input type="text" id="client-name" required placeholder="Ex: Maria Souza" style="width: 100%; padding: 8px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="client-phone">Seu WhatsApp / Telefone:</label>
+            <input type="tel" id="client-phone" required placeholder="Ex: (11) 98888-7777" style="width: 100%; padding: 8px;">
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btn-close-modal" class="btn btn-secondary" style="flex: 1;">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Confirmar Reserva</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- PASSO 2: CARD COMPROVANTE (GERA IMAGEM) -->
+      <div id="modal-step-receipt" class="hidden">
+        <div id="ticket-receipt-card" class="receipt-card">
+          <div class="receipt-header">
+            <span>🎟️ COMPROVANTE DE RESERVA</span>
+          </div>
+          <div class="receipt-number" id="rec-number">00</div>
+          <div class="receipt-body">
+            <p><strong>Prêmio:</strong> <span id="rec-prize">--</span></p>
+            <p><strong>Nome:</strong> <span id="rec-name">--</span></p>
+            <p><strong>Telefone:</strong> <span id="rec-phone">--</span></p>
+            <p><strong>Valor:</strong> <span id="rec-value">--</span></p>
+            <p><strong>Data:</strong> <span id="rec-date">--</span></p>
+          </div>
+          <div class="receipt-footer">
+            <code>AUTENTICIDADE: <span id="rec-code">RF-0000</span></code>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+          <button type="button" id="btn-download-receipt" class="btn btn-primary" style="background-color: #16a34a;">
+            📸 Baixar Foto do Comprovante
+          </button>
+          <button type="button" id="btn-send-whatsapp" class="btn btn-primary">
+            📲 Enviar para o WhatsApp
+          </button>
+          <button type="button" id="btn-finish-receipt" class="btn btn-secondary">
+            Fechar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container">
+      <p>RIFA 100 — Sistema de Rifa Digital Transparente.</p>
+    </div>
+  </footer>
+
+  <script src="js/rifa.js"></script>
+  <script src="js/participantes.js"></script>
+  <script src="js/sorteio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
