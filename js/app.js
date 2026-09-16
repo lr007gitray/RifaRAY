@@ -1,9 +1,12 @@
 /**
- * app.js - Integração com Comprovante em Foto
+ * app.js - Integração com Painel Secreto por Senha e Comprovante
  */
 
 // ⚠️ DIGITE SEU NÚMERO DE WHATSAPP AQUI (Com DDD, apenas números)
 const SEU_WHATSAPP = '5511975521048';
+
+// 🔒 DEFINA A SUA SENHA DO PAINEL AQUI
+const SENHA_ADMIN = '#rifaRAY75desapega';
 
 document.addEventListener('DOMContentLoaded', () => {
   RifaSystem.init();
@@ -12,11 +15,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupEvents() {
-  // Alternar Visibilidade Admin
-  const btnToggleAdmin = document.getElementById('btn-toggle-admin');
+  // Painel Secreto: Clica 3 vezes no título "🎟️ RIFA 100" para pedir a senha
+  const brandTitle = document.querySelector('.brand-title');
   const adminPanel = document.getElementById('admin-panel');
-  if (btnToggleAdmin && adminPanel) {
-    btnToggleAdmin.addEventListener('click', () => adminPanel.classList.toggle('hidden'));
+  let cliques = 0;
+
+  if (brandTitle && adminPanel) {
+    brandTitle.style.cursor = 'pointer';
+
+    brandTitle.addEventListener('click', () => {
+      cliques++;
+      if (cliques === 3) {
+        cliques = 0;
+        const senhaDigitada = prompt('🔒 Digite a senha do Organizador:');
+        
+        if (senhaDigitada === SENHA_ADMIN) {
+          adminPanel.classList.toggle('hidden');
+          alert('⚙️ Painel do Organizador Liberado!');
+        } else if (senhaDigitada !== null) {
+          alert('❌ Senha incorreta!');
+        }
+      }
+      // Reseta o contador se demorar mais de 2 segundos entre os cliques
+      setTimeout(() => { cliques = 0; }, 2000);
+    });
   }
 
   // Formulário Editar Prêmio
@@ -258,3 +280,4 @@ function executarAnimacaoESorteio() {
     }
   }, 80);
 }
+
