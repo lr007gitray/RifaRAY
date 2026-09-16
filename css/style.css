@@ -1,0 +1,358 @@
+/* --- VARIÁVEIS DE CORES E TEMA --- */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  --bg-color: #f1f5f9;
+  --card-bg: #ffffff;
+  --text-main: #0f172a;
+  --text-secondary: #475569;
+  --border-color: #e2e8f0;
+  
+  /* Cores de Status dos Números */
+  --status-available: #22c55e; /* 🟢 Verde */
+  --status-reserved: #eab308;  /* 🟡 Amarelo */
+  --status-sold: #ef4444;      /* 🔴 Vermelho */
+  --status-free: #3b82f6;      /* 🔵 Azul */
+}
+
+/* --- RESET BÁSICO E LAYOUT --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  padding-bottom: 40px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* --- CABEÇALHO --- */
+.app-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 24px 0;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.brand-title {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* --- ESTRUTURA DOS CARDS --- */
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- CARD DO PRÊMIO --- */
+.prize-card {
+  position: relative;
+}
+
+.badge-highlight {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: #f59e0b;
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.prize-image-container {
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background-color: #e2e8f0;
+}
+
+.prize-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prize-title {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.prize-description {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.prize-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: var(--bg-color);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.info-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.info-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* --- INDICADORES / METRICAS --- */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  text-align: center;
+}
+
+.metric-box {
+  padding: 10px 4px;
+  border-radius: 8px;
+  color: white;
+}
+
+.metric-available { background-color: var(--status-available); }
+.metric-reserved { background-color: var(--status-reserved); }
+.metric-sold { background-color: var(--status-sold); }
+.metric-free { background-color: var(--status-free); }
+
+.metric-num {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* --- LEGENDA --- */
+.legend-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.status-available { background-color: var(--status-available); }
+.status-reserved { background-color: var(--status-reserved); }
+.status-sold { background-color: var(--status-sold); }
+.status-free { background-color: var(--status-free); }
+
+/* --- GRADE DOS 100 NÚMEROS --- */
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+}
+
+@media (max-width: 500px) {
+  .numbers-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.number-btn {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.number-btn:active {
+  transform: scale(0.95);
+}
+
+.number-btn.available { background-color: var(--status-available); }
+.number-btn.reserved { background-color: var(--status-reserved); }
+.number-btn.sold { background-color: var(--status-sold); opacity: 0.7; }
+.number-btn.free { background-color: var(--status-free); }
+
+/* --- BOTÕES E FORMULÁRIOS --- */
+.btn {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { background-color: var(--primary-hover); }
+
+.btn-secondary { background-color: var(--secondary-color); color: white; }
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* --- SORTEIO --- */
+.draw-display {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.spinner-number {
+  display: inline-block;
+  font-size: 3.5rem;
+  font-weight: 900;
+  background-color: var(--bg-color);
+  padding: 10px 30px;
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+}
+
+.result-card {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+/* --- MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* --- CARD COMPROVANTE (TICKET) --- */
+.receipt-card {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 2px dashed #2563eb;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 12px;
+}
+
+.receipt-header {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #2563eb;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.receipt-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #1e293b;
+  line-height: 1;
+  margin: 10px 0;
+  background: #dbeafe;
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 8px;
+}
+
+.receipt-body {
+  text-align: left;
+  font-size: 0.85rem;
+  color: #334155;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+
+.receipt-body p {
+  margin-bottom: 4px;
+}
+
+.receipt-footer {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.app-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 20px;
+}
